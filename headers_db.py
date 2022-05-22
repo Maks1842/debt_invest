@@ -5,6 +5,7 @@ headers_di_db = '''id serial PRIMARY KEY,
                     v_rabote varchar(20),
                     Ssylka_na_dose varchar(20),
                     FIO varchar(50),
+                    Rod varchar(10),
                     Nomer_dogovora varchar(50),
                     Data_nachala varchar(20),
                     Summa_po_resheniju_suda varchar(20),
@@ -91,3 +92,10 @@ headers_di_db = '''id serial PRIMARY KEY,
                     Dogovor_tsessii varchar(20),
                     dnej varchar(20),
                     Data_ustupki varchar(20)'''
+
+indexes = (("Должник", 3, '', "SELECT FIO, Rod FROM reestr_test_di WHERE id ="),
+           ("Остаток_долга", 0, '', "SELECT Ostatok_dolga FROM reestr_test_di WHERE id ="),
+           ("№_ИП", 0, '', "SELECT Dejstvujuschee_IP FROM reestr_test_di WHERE id ="),
+           ("Суд", 0, 'суд', "SELECT Sud FROM reestr_test_di WHERE id =")
+           )
+

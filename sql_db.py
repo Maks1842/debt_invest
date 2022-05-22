@@ -13,39 +13,74 @@ import re
 import headers_db
 
 
+# connect to exist database
+connection = psycopg2.connect(
+    host=host,
+    user=user,
+    password=password,
+    database=db_name
+)
+connection.autocommit = True    # автоматически сохраняет изменения в БД. Чтобы после каждого запроса ни вставлять connection.commit()
+
+# создать объект cursor для работы с database
+cursor = connection.cursor()
+
+
 def heading_transliterate():
     wookbook = openpyxl.load_workbook('data/база_test.xlsx')
     worksheet = wookbook.active
     for i in range(1):
         for col in worksheet.iter_cols(1, 93):
-            # print(col[i].value)
-
-
             ru_text = col[i].value
             text = translit(ru_text, language_code='ru', reversed=True)
             text_export = re.sub(' ', '_', text)
 
             print(text_export)
 
-def connect_postgres():
+def create_tab():
     try:
-        # connect to exist database
-        connection = psycopg2.connect(
-            host=host,
-            user=user,
-            password=password,
-            database=db_name
-        )
-        connection.autocommit = True    # автоматически сохраняет изменения в БД. Чтобы после каждого запроса ни вставлять connection.commit()
-
-        # вначале необходимо создать объект cursor для работы с database
-        cursor = connection.cursor()
+        # # connect to exist database
+        # connection = psycopg2.connect(
+        #     host=host,
+        #     user=user,
+        #     password=password,
+        #     database=db_name
+        # )
+        # connection.autocommit = True    # автоматически сохраняет изменения в БД. Чтобы после каждого запроса ни вставлять connection.commit()
+        #
+        # # вначале необходимо создать объект cursor для работы с database
+        # cursor = connection.cursor()
 
         # создать таблицу
         cursor.execute(
-            f'''CREATE TABLE IF NOT EXISTS reest_test2_di({headers_db.headers_di_db});'''
+            f'''CREATE TABLE IF NOT EXISTS reestr_test_di({headers_db.headers_di_db});'''
         )
-        print('[INFO] Таблица создана')
+        print('[INFO] Таблица reestr_test2_di создана')
+
+        cursor.execute(
+            '''CREATE TABLE IF NOT EXISTS indexes_tab(
+            id serial PRIMARY KEY,
+            variables varchar(30) NOT NULL,
+            number_of_words int NOT NULL,
+            keyword varchar(20),
+            formulas text);'''
+        )
+        print('[INFO] Таблица indexes_tab создана')
+
+        cursor.execute(
+            '''CREATE TABLE IF NOT EXISTS declensions_debt_tab(
+            id serial PRIMARY KEY,
+            number_word int NOT NULL,
+            ending_word varchar(20) NOT NULL,
+            condition varchar(20),
+            imenit varchar(10),
+            rodit varchar(10),
+            datel varchar(10),
+            vinit varchar(10),
+            tvorit varchar(10),
+            predl varchar(10));'''
+        )
+        print('[INFO] Таблица declensions_debt_tab создана')
 
         # x = 'number_ep'
         # y = 'debtor'
@@ -66,6 +101,48 @@ def connect_postgres():
 
     except Exception as _ex:
         print('[INFO] Error while working with PostgreSQL', _ex)
+    finally:
+        if connection:
+            cursor.close()
+            connection.close()
+            print('[INFO] PostgreSQL connection closed')
+
+
+
+def insert_in_tab():
+    try:
+        # добавление строк
+        indexies_list = headers_db.indexes
+        for index in indexies_list:
+            # print(index)
+            cursor.execute(
+                f'''INSERT INTO indexes_tab (variables, number_of_words, keyword, formulas) VALUES {index};'''
+            )
+            # print('[INFO] Таблица reest_test2_di создана')
+
+    except Exception as _ex:
+        print('[INFO] Error while working with PostgreSQL', _ex)
+
+    finally:
+        if connection:
+            cursor.close()
+            connection.close()
+            print('[INFO] PostgreSQL connection closed')
+
+
+def select_from_tab():
+    try:
+        cursor.execute('''SELECT * FROM indexes_tab;''')
+        index_tab = cursor.fetchall()
+        print(index_tab)
+        for index in index_tab:
+            x = 1
+            cursor.execute(f'''{index[3]}{x}''')
+            print(cursor.fetchone())
+
+    except Exception as _ex:
+        print('[INFO] Error while working with PostgreSQL', _ex)
+
     finally:
         if connection:
             cursor.close()
@@ -97,10 +174,12 @@ def create_file():
         #                  'РОСП',
         #                  'Адрес РОСП'])
 
-    connect_postgres()
+    create_tab()
 
 
 if __name__ == '__main__':
     # create_file()
     # heading_transliterate()
-    connect_postgres()
+    create_tab()
+    # insert_in_tab()
+    # select_from_tab()
