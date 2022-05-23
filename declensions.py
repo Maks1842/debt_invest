@@ -18,18 +18,19 @@ cursor = connection.cursor()
 # text = ('Петросян Лейла Кареновна', 'жен')
 # text = ('Петросян Карен Радикович', 'муж')
 # text = ('Айрапетян Егише Павелович', 'муж')
-text = ('ПУШКИН Карен Радикович', 'муж')
+# text = ('ПУШКИН Карен Радикович', 'муж')
 # text = ('Иванов Аркадий Андреевич', 'муж')
-index_tab = ''
-
-index_signal = True
-
-try:
-    cursor.execute('''SELECT * FROM declensions_debt_tab;''')
-    index_tab = cursor.fetchall()
-
-except Exception as _ex:
-    print('[INFO] Error while working with PostgreSQL', _ex)
+# text = ('Артемова Ирина Геннадьевна', 'жен')
+# index_tab = ''
+#
+# index_signal = True
+#
+# try:
+#     cursor.execute('''SELECT * FROM declensions_debt_tab;''')
+#     index_tab = cursor.fetchall()
+#
+# except Exception as _ex:
+#     print('[INFO] Error while working with PostgreSQL', _ex)
 
 def declension(text, index_tab):
     text_im = []
@@ -84,12 +85,12 @@ def declension(text, index_tab):
     text_tvorit = ' '.join(text_tv)
     text_predl = ' '.join(text_pr)
 
-    print(f'{text_imenit = }')
-    print(f'{text_rodit = }')
-    print(f'{text_dat = }')
-    print(f'{text_vinit = }')
-    print(f'{text_tvorit = }')
-    print(f'{text_predl = }')
+    # print(f'{text_imenit = }')
+    # print(f'{text_rodit = }')
+    # print(f'{text_dat = }')
+    # print(f'{text_vinit = }')
+    # print(f'{text_tvorit = }')
+    # print(f'{text_predl = }')
 
     return text_imenit, text_rodit, text_dat, text_vinit, text_tvorit, text_predl
 
@@ -129,7 +130,7 @@ def declens_imenit(word, rod, count, index_tab):
                         new_ending = re.search(r'(?<=\+)\w+', index[4]).group()
                         word_imenit = word + new_ending
                     elif re.findall(r'-', index[4]):
-                        old_ending = re.search(r'\w+(?=\-)', index[4]).group()
+                        old_ending = re.search(r'\w+(?=\-)|.(?=\-)', index[4]).group()
                         new_ending = re.search(r'(?<=\-)\w+', index[4]).group()
                         word_imenit = re.sub(rf'({old_ending})$', rf'{new_ending}', word)
 
@@ -181,7 +182,7 @@ def declens_rodit(word, rod, count, index_tab):
                         new_ending = re.search(r'(?<=\+)\w+', index[5]).group()
                         word_rodit = word + new_ending
                     elif re.findall(r'-', index[5]):
-                        old_ending = re.search(r'\w+(?=\-)', index[5]).group()
+                        old_ending = re.search(r'\w+(?=\-)|.(?=\-)', index[5]).group()
                         new_ending = re.search(r'(?<=\-)\w+', index[5]).group()
                         word_rodit = re.sub(rf'({old_ending})$', rf'{new_ending}', word)
 
@@ -233,7 +234,7 @@ def declens_dat(word, rod, count, index_tab):
                         new_ending = re.search(r'(?<=\+)\w+', index[6]).group()
                         word_dat = word + new_ending
                     elif re.findall(r'-', index[6]):
-                        old_ending = re.search(r'\w+(?=\-)', index[6]).group()
+                        old_ending = re.search(r'\w+(?=\-)|.(?=\-)', index[6]).group()
                         new_ending = re.search(r'(?<=\-)\w+', index[6]).group()
                         word_dat = re.sub(rf'({old_ending})$', rf'{new_ending}', word)
 
@@ -285,7 +286,7 @@ def declens_vinit(word, rod, count, index_tab):
                         new_ending = re.search(r'(?<=\+)\w+', index[7]).group()
                         word_vinit = word + new_ending
                     elif re.findall(r'-', index[7]):
-                        old_ending = re.search(r'\w+(?=\-)', index[7]).group()
+                        old_ending = re.search(r'\w+(?=\-)|.(?=\-)', index[7]).group()
                         new_ending = re.search(r'(?<=\-)\w+', index[7]).group()
                         word_vinit = re.sub(rf'({old_ending})$', rf'{new_ending}', word)
 
@@ -338,7 +339,7 @@ def declens_tvorit(word, rod, count, index_tab):
                         new_ending = re.search(r'(?<=\+)\w+', index[8]).group()
                         word_tvorit = word + new_ending
                     elif re.findall(r'-', index[8]):
-                        old_ending = re.search(r'\w+(?=\-)', index[8]).group()
+                        old_ending = re.search(r'\w+(?=\-)|.(?=\-)', index[8]).group()
                         new_ending = re.search(r'(?<=\-)\w+', index[8]).group()
                         word_tvorit = re.sub(rf'({old_ending})$', rf'{new_ending}', word)
 
@@ -390,7 +391,7 @@ def declens_predl(word, rod, count, index_tab):
                         new_ending = re.search(r'(?<=\+)\w+', index[9]).group()
                         word_predl = word + new_ending
                     elif re.findall(r'-', index[9]):
-                        old_ending = re.search(r'\w+(?=\-)', index[9]).group()
+                        old_ending = re.search(r'\w+(?=\-)|.(?=\-)', index[9]).group()
                         new_ending = re.search(r'(?<=\-)\w+', index[9]).group()
                         word_predl = re.sub(rf'({old_ending})$', rf'{new_ending}', word)
 
@@ -408,13 +409,4 @@ def declens_predl(word, rod, count, index_tab):
 
 
 
-
-
-
-
-
-
-
-
-
-declension(text, index_tab)
+# declension(text, index_tab)
