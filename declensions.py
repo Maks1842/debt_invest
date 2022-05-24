@@ -18,9 +18,21 @@ cursor = connection.cursor()
 # text = ('Петросян Карен Радикович', 'муж')
 # text = ('Айрапетян Егише Павелович', 'муж')
 # text = ('ПУШКИН Карен Радикович', 'муж')
-# text = ('Иванов Аркадий Андреевич', 'муж')
-# text = ('Артемова Ирина Геннадьевна', 'жен')
+# text = ('Иванов Илья Андреевич', 'муж')
+# text = ('Артемова Зульфия Геннадьевна', 'жен')
 # index_tab = ''
+# cursor.execute('''SELECT * FROM indexes_tab;''')
+# indexes_tab = cursor.fetchall()
+# # print(f'{index_tab = }')
+# for index in indexes_tab:
+#     if index[3] != None:
+#         try:
+#             cursor.execute(f'''{index[3]}''')
+#             index_tab = cursor.fetchall()
+#         except Exception as _ex:
+#             print('[INFO] Error while working with PostgreSQL', _ex)
+
+
 
 def declension(text, index_tab):
     text_im = []
@@ -54,12 +66,6 @@ def declension(text, index_tab):
         if word_predl == '':
             word_predl = word
 
-        # print(f'{word_imenit = }')
-        # print(f'{word_rodit = }')
-        # print(f'{word_dat = }')
-        # print(f'{word_vinit = }')
-        # print(f'{word_tvorit = }')
-        # print(f'{word_predl = }')
 
         text_im.append(word_imenit)
         text_ro.append(word_rodit)
@@ -67,6 +73,13 @@ def declension(text, index_tab):
         text_vi.append(word_vinit)
         text_tv.append(word_tvorit)
         text_pr.append(word_predl)
+
+        # print(f'{text_im = }')
+        # print(f'{text_ro = }')
+        # print(f'{text_da = }')
+        # print(f'{text_vi = }')
+        # print(f'{text_tv = }')
+        # print(f'{text_pr = }')
 
     text_imenit = ' '.join(text_im)
     text_rodit = ' '.join(text_ro)

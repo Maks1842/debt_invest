@@ -78,7 +78,7 @@ def select_from_indexes_tab(id_reestr, count):
                             f'{index[1]}_пред': f'{result_decl[5]}',
                             f'Порядковый': f'{count}'
                             }
-                print(f'{context = }')
+                # print(f'{context = }')
 
             elif index[3] == None:
                 cursor.execute(f'''{index[2]}{id_reestr}''')
@@ -96,9 +96,9 @@ def select_from_indexes_tab(id_reestr, count):
 
 
 def doc_pattern(context, word, count):
-    doc = DocxTemplate(f'data/УВЕД-ТРЕБ  ЧС_ШАБЛОН.docx')
+    doc = DocxTemplate(f'data/УВЕД-ТРЕБ  С ПЕЧАТЬЮ_ШАБЛОН.docx')
     doc.render(context)
-    doc.save(f'data/УВЕД-ТРЕБ {word[0]}_{count}.docx')
+    doc.save(f'data/С печатью_240522/УВЕД-ТРЕБ_П {word[0]}_{count}.docx')
 
 
 
