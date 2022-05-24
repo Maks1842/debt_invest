@@ -27,7 +27,7 @@ cursor = connection.cursor()
 
 
 def heading_transliterate():
-    wookbook = openpyxl.load_workbook('data/база_test.xlsx')
+    wookbook = openpyxl.load_workbook('data/Реестр для шаблона_work.xlsx')
     worksheet = wookbook.active
     for i in range(1):
         for col in worksheet.iter_cols(1, 93):
@@ -56,6 +56,11 @@ def create_tab():
             f'''CREATE TABLE IF NOT EXISTS reestr_test_di({headers_db.headers_di_db});'''
         )
         print('[INFO] Таблица reestr_test2_di создана')
+
+        cursor.execute(
+            f'''CREATE TABLE IF NOT EXISTS reestr_230522_di({headers_db.headers_230522_db});'''
+        )
+        print('[INFO] Таблица reestr_230522_di создана')
 
         cursor.execute(
             '''CREATE TABLE IF NOT EXISTS indexes_tab(

@@ -33,9 +33,9 @@ cursor = connection.cursor()
 
 def select_from_reestr_tab():
     try:
-        cursor.execute('''SELECT id FROM reestr_test_di;''')
+        cursor.execute('''SELECT id FROM reestr_230522_di;''')
         reestr_tab = cursor.fetchall()
-        count = 100
+        count = 1455
         for data in reestr_tab:
             select_from_indexes_tab(data[0], count)
             count += 1
@@ -51,15 +51,16 @@ def select_from_reestr_tab():
 
 
 def select_from_indexes_tab(id_reestr, count):
-
+    context = {}
+    result_decl = ''
     try:
         cursor.execute('''SELECT * FROM indexes_tab;''')
         indexes_tab = cursor.fetchall()
         # print(f'{index_tab = }')
         for index in indexes_tab:
-            if 'Должник' in index:
+            if index[3] != None:
                 try:
-                    cursor.execute('''SELECT * FROM declensions_debt_tab;''')
+                    cursor.execute(f'''{index[3]}''')
                     index_tab = cursor.fetchall()
                 except Exception as _ex:
                     print('[INFO] Error while working with PostgreSQL', _ex)
@@ -68,56 +69,40 @@ def select_from_indexes_tab(id_reestr, count):
                 text = cursor.fetchone()
                 # print(f'{text = }')
                 result_decl = declensions.declension(text, index_tab)
-                # print(f'{result_decl = }')
-                doc_pattern(index, result_decl, count)
-            # elif 'Остаток_долга' in index:
-            #     try:
-            #         cursor.execute('''SELECT * FROM declensions_debt_tab;''')
-            #         index_tab = cursor.fetchall()
-            #     except Exception as _ex:
-            #         print('[INFO] Error while working with PostgreSQL', _ex)
-            #
-            #     cursor.execute(f'''{index[2]}{id_reestr}''')
-            #     text = cursor.fetchone()
-            #     # print(f'{text = }')
-            #     result_decl = declensions.declension(text, index_tab)
-            #     # print(f'{result_decl = }')
-            #     doc_pattern(index, result_decl, count)
+                context = { f'{index[1]}': f'{result_decl[0]}',
+                            f'{index[1]}_им': f'{result_decl[0]}',
+                            f'{index[1]}_род': f'{result_decl[1]}',
+                            f'{index[1]}_дат': f'{result_decl[2]}',
+                            f'{index[1]}_вин': f'{result_decl[3]}',
+                            f'{index[1]}_твор': f'{result_decl[4]}',
+                            f'{index[1]}_пред': f'{result_decl[5]}',
+                            f'Порядковый': f'{count}'
+                            }
+                print(f'{context = }')
 
+            elif index[3] == None:
+                cursor.execute(f'''{index[2]}{id_reestr}''')
+                text2 = cursor.fetchone()
+                # print(f'{x = }')
+                if f'{text2[0]}' != 'None':
+                    context[f'{index[1]}'] = f'{text2[0]}'
+                    # print(f'{context = }')
+                else:
+                    context[f'{index[1]}'] = ''
+            doc_pattern(context, result_decl, count)
 
     except Exception as _ex:
         print('[INFO] Error while working with PostgreSQL 2', _ex)
 
-    # finally:
-        # if connection:
-        #     cursor.close()
-            # connection.close()
-            # print('[INFO] PostgreSQL connection closed')
 
-
-
-def doc_pattern(index, word, count):
-    doc = DocxTemplate(f'data/Адм иск ШАБЛОН.docx')
-
-    context = { f'{index[1]}': f'{word[0]}',
-                f'{index[1]}_им': f'{word[0]}',
-                f'{index[1]}_род': f'{word[1]}',
-                f'{index[1]}_дат': f'{word[2]}',
-                f'{index[1]}_вин': f'{word[3]}',
-                f'{index[1]}_твор': f'{word[4]}',
-                f'{index[1]}_пред': f'{word[5]}',
-                f'Счётчик': f'{count}'
-                }
+def doc_pattern(context, word, count):
+    doc = DocxTemplate(f'data/УВЕД-ТРЕБ  ЧС_ШАБЛОН.docx')
     doc.render(context)
-    doc.save(f'data/Адм иск {word[0]}.docx')
+    doc.save(f'data/УВЕД-ТРЕБ {word[0]}_{count}.docx')
 
 
 
-
-# test_doc('test', 'Всё работает')
-# some_word()
-# two_word()
-# one_word()
 # select_from_tab()
 select_from_reestr_tab()
 # select_from_indexes_tab()
+# doc_pattern()

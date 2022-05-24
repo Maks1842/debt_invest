@@ -14,7 +14,6 @@ connection.autocommit = True    # автоматически сохраняет 
 # создать объект cursor для работы с database
 cursor = connection.cursor()
 
-
 # text = ('Петросян Лейла Кареновна', 'жен')
 # text = ('Петросян Карен Радикович', 'муж')
 # text = ('Айрапетян Егише Павелович', 'муж')
@@ -22,15 +21,6 @@ cursor = connection.cursor()
 # text = ('Иванов Аркадий Андреевич', 'муж')
 # text = ('Артемова Ирина Геннадьевна', 'жен')
 # index_tab = ''
-#
-# index_signal = True
-#
-# try:
-#     cursor.execute('''SELECT * FROM declensions_debt_tab;''')
-#     index_tab = cursor.fetchall()
-#
-# except Exception as _ex:
-#     print('[INFO] Error while working with PostgreSQL', _ex)
 
 def declension(text, index_tab):
     text_im = []
@@ -85,13 +75,6 @@ def declension(text, index_tab):
     text_tvorit = ' '.join(text_tv)
     text_predl = ' '.join(text_pr)
 
-    # print(f'{text_imenit = }')
-    # print(f'{text_rodit = }')
-    # print(f'{text_dat = }')
-    # print(f'{text_vinit = }')
-    # print(f'{text_tvorit = }')
-    # print(f'{text_predl = }')
-
     return text_imenit, text_rodit, text_dat, text_vinit, text_tvorit, text_predl
 
 
@@ -114,7 +97,7 @@ def declens_imenit(word, rod, count, index_tab):
                         new_ending = re.search(r'(?<=\-)\w+', index[4]).group()
                         word_imenit = re.sub(rf'({old_ending})$', rf'{new_ending}', word)
 
-            elif re.findall(rf'({index[2]})$', word) and re.findall(r'(?i)(муж)', index[3]) and re.findall(r'(?i)(муж)', rod):
+            elif re.findall(rf'({index[2]})$', word) and re.findall(r'(?i)(муж)|м', index[3]) and re.findall(r'(?i)(муж)|м', rod):
                 if index[4] != None:               # Именительный
                     if re.findall(r'\+', index[4]):
                         new_ending = re.search(r'(?<=\+)\w+', index[4]).group()
@@ -124,7 +107,7 @@ def declens_imenit(word, rod, count, index_tab):
                         new_ending = re.search(r'(?<=\-)\w+', index[4]).group()
                         word_imenit = re.sub(rf'({old_ending})$', rf'{new_ending}', word)
 
-            elif re.findall(rf'({index[2]})$', word) and re.findall(r'(?i)(жен)', index[3]) and re.findall(r'(?i)(жен)', rod):
+            elif re.findall(rf'({index[2]})$', word) and re.findall(r'(?i)(жен)|ж', index[3]) and re.findall(r'(?i)(жен)|ж', rod):
                 if index[4] != None:               # Именительный
                     if re.findall(r'\+', index[4]):
                         new_ending = re.search(r'(?<=\+)\w+', index[4]).group()
@@ -134,7 +117,7 @@ def declens_imenit(word, rod, count, index_tab):
                         new_ending = re.search(r'(?<=\-)\w+', index[4]).group()
                         word_imenit = re.sub(rf'({old_ending})$', rf'{new_ending}', word)
 
-            elif f'{index[2]}' == 'sogl' and re.findall(rf'({sogl})$', word) and re.findall(r'(?i)(муж)', index[3]) and re.findall(r'(?i)(муж)', rod):
+            elif f'{index[2]}' == 'sogl' and re.findall(rf'({sogl})$', word) and re.findall(r'(?i)(муж)|м', index[3]) and re.findall(r'(?i)(муж)|м', rod):
                 if index[4] != None:               # Именительный
                     if re.findall(r'\+', index[4]):
                         new_ending = re.search(r'(?<=\+)\w+', index[4]).group()
@@ -166,7 +149,7 @@ def declens_rodit(word, rod, count, index_tab):
                         new_ending = re.search(r'(?<=\-)\w+', index[5]).group()
                         word_rodit = re.sub(rf'({old_ending})$', rf'{new_ending}', word)
 
-            elif re.findall(rf'({index[2]})$', word) and re.findall(r'(?i)(муж)', index[3]) and re.findall(r'(?i)(муж)', rod):
+            elif re.findall(rf'({index[2]})$', word) and re.findall(r'(?i)(муж)|м', index[3]) and re.findall(r'(?i)(муж)|м', rod):
                 if index[5] != None:               # Именительный
                     if re.findall(r'\+', index[5]):
                         new_ending = re.search(r'(?<=\+)\w+', index[5]).group()
@@ -176,7 +159,7 @@ def declens_rodit(word, rod, count, index_tab):
                         new_ending = re.search(r'(?<=\-)\w+', index[5]).group()
                         word_rodit = re.sub(rf'({old_ending})$', rf'{new_ending}', word)
 
-            elif re.findall(rf'({index[2]})$', word) and re.findall(r'(?i)(жен)', index[3]) and re.findall(r'(?i)(жен)', rod):
+            elif re.findall(rf'({index[2]})$', word) and re.findall(r'(?i)(жен)|ж', index[3]) and re.findall(r'(?i)(жен)|ж', rod):
                 if index[5] != None:               # Именительный
                     if re.findall(r'\+', index[5]):
                         new_ending = re.search(r'(?<=\+)\w+', index[5]).group()
@@ -186,7 +169,7 @@ def declens_rodit(word, rod, count, index_tab):
                         new_ending = re.search(r'(?<=\-)\w+', index[5]).group()
                         word_rodit = re.sub(rf'({old_ending})$', rf'{new_ending}', word)
 
-            elif f'{index[2]}' == 'sogl' and re.findall(rf'({sogl})$', word) and re.findall(r'(?i)(муж)', index[3]) and re.findall(r'(?i)(муж)', rod):
+            elif f'{index[2]}' == 'sogl' and re.findall(rf'({sogl})$', word) and re.findall(r'(?i)(муж)|м', index[3]) and re.findall(r'(?i)(муж)|м', rod):
                 if index[5] != None:               # Именительный
                     if re.findall(r'\+', index[5]):
                         new_ending = re.search(r'(?<=\+)\w+', index[5]).group()
@@ -218,7 +201,7 @@ def declens_dat(word, rod, count, index_tab):
                         new_ending = re.search(r'(?<=\-)\w+', index[6]).group()
                         word_dat = re.sub(rf'({old_ending})$', rf'{new_ending}', word)
 
-            elif re.findall(rf'({index[2]})$', word) and re.findall(r'(?i)(муж)', index[3]) and re.findall(r'(?i)(муж)', rod):
+            elif re.findall(rf'({index[2]})$', word) and re.findall(r'(?i)(муж)|м', index[3]) and re.findall(r'(?i)(муж)|м', rod):
                 if index[6] != None:               # Именительный
                     if re.findall(r'\+', index[6]):
                         new_ending = re.search(r'(?<=\+)\w+', index[6]).group()
@@ -228,7 +211,7 @@ def declens_dat(word, rod, count, index_tab):
                         new_ending = re.search(r'(?<=\-)\w+', index[6]).group()
                         word_dat = re.sub(rf'({old_ending})$', rf'{new_ending}', word)
 
-            elif re.findall(rf'({index[2]})$', word) and re.findall(r'(?i)(жен)', index[3]) and re.findall(r'(?i)(жен)', rod):
+            elif re.findall(rf'({index[2]})$', word) and re.findall(r'(?i)(жен)|ж', index[3]) and re.findall(r'(?i)(жен)|ж', rod):
                 if index[6] != None:               # Именительный
                     if re.findall(r'\+', index[6]):
                         new_ending = re.search(r'(?<=\+)\w+', index[6]).group()
@@ -238,7 +221,7 @@ def declens_dat(word, rod, count, index_tab):
                         new_ending = re.search(r'(?<=\-)\w+', index[6]).group()
                         word_dat = re.sub(rf'({old_ending})$', rf'{new_ending}', word)
 
-            elif f'{index[2]}' == 'sogl' and re.findall(rf'({sogl})$', word) and re.findall(r'(?i)(муж)', index[3]) and re.findall(r'(?i)(муж)', rod):
+            elif f'{index[2]}' == 'sogl' and re.findall(rf'({sogl})$', word) and re.findall(r'(?i)(муж)|м', index[3]) and re.findall(r'(?i)(муж)|м', rod):
                 if index[6] != None:               # Именительный
                     if re.findall(r'\+', index[6]):
                         new_ending = re.search(r'(?<=\+)\w+', index[6]).group()
@@ -270,7 +253,7 @@ def declens_vinit(word, rod, count, index_tab):
                         new_ending = re.search(r'(?<=\-)\w+', index[7]).group()
                         word_vinit = re.sub(rf'({old_ending})$', rf'{new_ending}', word)
 
-            elif re.findall(rf'({index[2]})$', word) and re.findall(r'(?i)(муж)', index[3]) and re.findall(r'(?i)(муж)', rod):
+            elif re.findall(rf'({index[2]})$', word) and re.findall(r'(?i)(муж)|м', index[3]) and re.findall(r'(?i)(муж)|м', rod):
                 if index[7] != None:               # Именительный
                     if re.findall(r'\+', index[7]):
                         new_ending = re.search(r'(?<=\+)\w+', index[7]).group()
@@ -280,7 +263,7 @@ def declens_vinit(word, rod, count, index_tab):
                         new_ending = re.search(r'(?<=\-)\w+', index[7]).group()
                         word_vinit = re.sub(rf'({old_ending})$', rf'{new_ending}', word)
 
-            elif re.findall(rf'({index[2]})$', word) and re.findall(r'(?i)(жен)', index[3]) and re.findall(r'(?i)(жен)', rod):
+            elif re.findall(rf'({index[2]})$', word) and re.findall(r'(?i)(жен)|ж', index[3]) and re.findall(r'(?i)(жен)|ж', rod):
                 if index[7] != None:               # Именительный
                     if re.findall(r'\+', index[7]):
                         new_ending = re.search(r'(?<=\+)\w+', index[7]).group()
@@ -290,7 +273,7 @@ def declens_vinit(word, rod, count, index_tab):
                         new_ending = re.search(r'(?<=\-)\w+', index[7]).group()
                         word_vinit = re.sub(rf'({old_ending})$', rf'{new_ending}', word)
 
-            elif f'{index[2]}' == 'sogl' and re.findall(rf'({sogl})$', word) and re.findall(r'(?i)(муж)', index[3]) and re.findall(r'(?i)(муж)', rod):
+            elif f'{index[2]}' == 'sogl' and re.findall(rf'({sogl})$', word) and re.findall(r'(?i)(муж)|м', index[3]) and re.findall(r'(?i)(муж)|м', rod):
                 if index[7] != None:               # Именительный
                     if re.findall(r'\+', index[7]):
                         new_ending = re.search(r'(?<=\+)\w+', index[7]).group()
@@ -301,7 +284,6 @@ def declens_vinit(word, rod, count, index_tab):
                         word_vinit = re.sub(rf'({old_ending})$', rf'{new_ending}', word)
 
     return word_vinit
-
 
 
 def declens_tvorit(word, rod, count, index_tab):
@@ -323,7 +305,7 @@ def declens_tvorit(word, rod, count, index_tab):
                         new_ending = re.search(r'(?<=\-)\w+', index[8]).group()
                         word_tvorit = re.sub(rf'({old_ending})$', rf'{new_ending}', word)
 
-            elif re.findall(rf'({index[2]})$', word) and re.findall(r'(?i)(муж)', index[3]) and re.findall(r'(?i)(муж)', rod):
+            elif re.findall(rf'({index[2]})$', word) and re.findall(r'(?i)(муж)|м', index[3]) and re.findall(r'(?i)(муж)|м', rod):
                 if index[8] != None:               # Именительный
                     if re.findall(r'\+', index[8]):
                         new_ending = re.search(r'(?<=\+)\w+', index[8]).group()
@@ -333,7 +315,7 @@ def declens_tvorit(word, rod, count, index_tab):
                         new_ending = re.search(r'(?<=\-)\w+', index[8]).group()
                         word_tvorit = re.sub(rf'({old_ending})$', rf'{new_ending}', word)
 
-            elif re.findall(rf'({index[2]})$', word) and re.findall(r'(?i)(жен)', index[3]) and re.findall(r'(?i)(жен)', rod):
+            elif re.findall(rf'({index[2]})$', word) and re.findall(r'(?i)(жен)|ж', index[3]) and re.findall(r'(?i)(жен)|ж', rod):
                 if index[8] != None:               # Именительный
                     if re.findall(r'\+', index[8]):
                         new_ending = re.search(r'(?<=\+)\w+', index[8]).group()
@@ -343,7 +325,7 @@ def declens_tvorit(word, rod, count, index_tab):
                         new_ending = re.search(r'(?<=\-)\w+', index[8]).group()
                         word_tvorit = re.sub(rf'({old_ending})$', rf'{new_ending}', word)
 
-            elif f'{index[2]}' == 'sogl' and re.findall(rf'({sogl})$', word) and re.findall(r'(?i)(муж)', index[3]) and re.findall(r'(?i)(муж)', rod):
+            elif f'{index[2]}' == 'sogl' and re.findall(rf'({sogl})$', word) and re.findall(r'(?i)(муж)|м', index[3]) and re.findall(r'(?i)(муж)|м', rod):
                 if index[8] != None:               # Именительный
                     if re.findall(r'\+', index[8]):
                         new_ending = re.search(r'(?<=\+)\w+', index[8]).group()
@@ -375,7 +357,7 @@ def declens_predl(word, rod, count, index_tab):
                         new_ending = re.search(r'(?<=\-)\w+', index[9]).group()
                         word_predl = re.sub(rf'({old_ending})$', rf'{new_ending}', word)
 
-            elif re.findall(rf'({index[2]})$', word) and re.findall(r'(?i)(муж)', index[3]) and re.findall(r'(?i)(муж)', rod):
+            elif re.findall(rf'({index[2]})$', word) and re.findall(r'(?i)(муж)|м', index[3]) and re.findall(r'(?i)(муж)|м', rod):
                 if index[9] != None:               # Именительный
                     if re.findall(r'\+', index[9]):
                         new_ending = re.search(r'(?<=\+)\w+', index[9]).group()
@@ -385,7 +367,7 @@ def declens_predl(word, rod, count, index_tab):
                         new_ending = re.search(r'(?<=\-)\w+', index[9]).group()
                         word_predl = re.sub(rf'({old_ending})$', rf'{new_ending}', word)
 
-            elif re.findall(rf'({index[2]})$', word) and re.findall(r'(?i)(жен)', index[3]) and re.findall(r'(?i)(жен)', rod):
+            elif re.findall(rf'({index[2]})$', word) and re.findall(r'(?i)(жен)|ж', index[3]) and re.findall(r'(?i)(жен)|ж', rod):
                 if index[9] != None:               # Именительный
                     if re.findall(r'\+', index[9]):
                         new_ending = re.search(r'(?<=\+)\w+', index[9]).group()
@@ -395,7 +377,7 @@ def declens_predl(word, rod, count, index_tab):
                         new_ending = re.search(r'(?<=\-)\w+', index[9]).group()
                         word_predl = re.sub(rf'({old_ending})$', rf'{new_ending}', word)
 
-            elif f'{index[2]}' == 'sogl' and re.findall(rf'({sogl})$', word) and re.findall(r'(?i)(муж)', index[3]) and re.findall(r'(?i)(муж)', rod):
+            elif f'{index[2]}' == 'sogl' and re.findall(rf'({sogl})$', word) and re.findall(r'(?i)(муж)|м', index[3]) and re.findall(r'(?i)(муж)|м', rod):
                 if index[9] != None:               # Именительный
                     if re.findall(r'\+', index[9]):
                         new_ending = re.search(r'(?<=\+)\w+', index[9]).group()
