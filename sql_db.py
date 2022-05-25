@@ -1,4 +1,9 @@
-'''Импорт/Экспорт данных в СУБД Postgresql из excel/csv
+'''
+Это вспомогательный модуль.
+Импорт/Экспорт данных в СУБД Postgresql из excel/csv
+
+!!! Для склонений, в формуле ОБЯЗАТЕЛЬНО должна быть ссылка на поле "РОД"!!!
+
 cursor.fetchone() -- команда вывода первой строки таблицы
 cursor.fetchall() -- вывод всех строк БД
 cursor.fetchmany(3) -- вывод первых трёх строк БД
@@ -73,7 +78,7 @@ def create_tab():
         print('[INFO] Таблица indexes_tab создана')
 
         cursor.execute(
-            '''CREATE TABLE IF NOT EXISTS declensions_debt_tab(
+            '''CREATE TABLE IF NOT EXISTS declension_tribun_tab(
             id serial PRIMARY KEY,
             number_word int NOT NULL,
             ending_word varchar(20) NOT NULL,

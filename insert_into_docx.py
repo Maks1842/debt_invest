@@ -5,9 +5,8 @@ datv - дательный -- Кому? Чему?
 accs - винительный -- Кого? Что?
 ablt - творительный -- Кем? Чем?
 loct - предложный -- О ком? О чём?
-voct - звательный -- Его формы используются при обращении к человеку.
 
-
+!!! Для склонений, в формуле ОБЯЗАТЕЛЬНО должна быть ссылка на поле "РОД"!!!
 '''
 from docxtpl import DocxTemplate
 import psycopg2
@@ -96,9 +95,9 @@ def select_from_indexes_tab(id_reestr, count):
 
 
 def doc_pattern(context, word, count):
-    doc = DocxTemplate(f'data/УВЕД-ТРЕБ  С ПЕЧАТЬЮ_ШАБЛОН.docx')
+    doc = DocxTemplate(f'data/УВЕД-ТРЕБ  ЧС_ШАБЛОН.docx')
     doc.render(context)
-    doc.save(f'data/С печатью_240522/УВЕД-ТРЕБ_П {word[0]}_{count}.docx')
+    doc.save(f'data/Без печати_240522/УВЕД-ТРЕБ {word[0]}_{count}.docx')
 
 
 

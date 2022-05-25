@@ -1,3 +1,14 @@
+'''
+nomn - именительный -- Кто? Что?
+gent - родительный -- Кого? Чего?
+datv - дательный -- Кому? Чему?
+accs - винительный -- Кого? Что?
+ablt - творительный -- Кем? Чем?
+loct - предложный -- О ком? О чём?
+
+!!! Для склонений, в формуле ОБЯЗАТЕЛЬНО должна быть ссылка на поле "РОД"!!!
+'''
+
 import psycopg2
 from config import *
 import re
@@ -20,17 +31,19 @@ cursor = connection.cursor()
 # text = ('ПУШКИН Карен Радикович', 'муж')
 # text = ('Иванов Илья Андреевич', 'муж')
 # text = ('Артемова Зульфия Геннадьевна', 'жен')
+# text = ('Ипатовский городской суд г. Ставрополя', 'муж')
+#
 # index_tab = ''
 # cursor.execute('''SELECT * FROM indexes_tab;''')
 # indexes_tab = cursor.fetchall()
-# # print(f'{index_tab = }')
-# for index in indexes_tab:
-#     if index[3] != None:
-#         try:
-#             cursor.execute(f'''{index[3]}''')
-#             index_tab = cursor.fetchall()
-#         except Exception as _ex:
-#             print('[INFO] Error while working with PostgreSQL', _ex)
+# print(f'{indexes_tab[6] = }')
+# index = indexes_tab[6]
+# try:
+#     cursor.execute(f'''{index[3]}''')
+#     index_tab = cursor.fetchall()
+#     print(f'{index_tab = }')
+# except Exception as _ex:
+#     print('[INFO] Error while working with PostgreSQL', _ex)
 
 
 
