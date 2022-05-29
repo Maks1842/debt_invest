@@ -32,10 +32,10 @@ cursor = connection.cursor()
 
 
 def heading_transliterate():
-    wookbook = openpyxl.load_workbook('data/Реестр для шаблона_work.xlsx')
+    wookbook = openpyxl.load_workbook('data/fedresurs_bankrot_28-05-2022.xlsx')
     worksheet = wookbook.active
     for i in range(1):
-        for col in worksheet.iter_cols(1, 93):
+        for col in worksheet.iter_cols(1, 9):
             ru_text = col[i].value
             text = translit(ru_text, language_code='ru', reversed=True)
             text_export = re.sub(' ', '_', text)
@@ -44,53 +44,41 @@ def heading_transliterate():
 
 def create_tab():
     try:
-        # # connect to exist database
-        # connection = psycopg2.connect(
-        #     host=host,
-        #     user=user,
-        #     password=password,
-        #     database=db_name
-        # )
-        # connection.autocommit = True    # автоматически сохраняет изменения в БД. Чтобы после каждого запроса ни вставлять connection.commit()
-        #
-        # # вначале необходимо создать объект cursor для работы с database
-        # cursor = connection.cursor()
-
         # создать таблицу
         cursor.execute(
-            f'''CREATE TABLE IF NOT EXISTS reestr_test_di({headers_db.headers_di_db});'''
+            f'''CREATE TABLE IF NOT EXISTS reestr_bankrot({headers_db.headers_bankrot});'''
         )
-        print('[INFO] Таблица reestr_test2_di создана')
+        print('[INFO] Таблица reestr_bankrot создана')
 
-        cursor.execute(
-            f'''CREATE TABLE IF NOT EXISTS reestr_230522_di({headers_db.headers_230522_db});'''
-        )
-        print('[INFO] Таблица reestr_230522_di создана')
-
-        cursor.execute(
-            '''CREATE TABLE IF NOT EXISTS indexes_tab(
-            id serial PRIMARY KEY,
-            variables varchar(30) NOT NULL,
-            number_of_words int NOT NULL,
-            keyword varchar(20),
-            formulas text);'''
-        )
-        print('[INFO] Таблица indexes_tab создана')
-
-        cursor.execute(
-            '''CREATE TABLE IF NOT EXISTS declension_tribun_tab(
-            id serial PRIMARY KEY,
-            number_word int NOT NULL,
-            ending_word varchar(20) NOT NULL,
-            condition varchar(20),
-            imenit varchar(10),
-            rodit varchar(10),
-            datel varchar(10),
-            vinit varchar(10),
-            tvorit varchar(10),
-            predl varchar(10));'''
-        )
-        print('[INFO] Таблица declensions_debt_tab создана')
+        # cursor.execute(
+        #     f'''CREATE TABLE IF NOT EXISTS reestr_230522_di({headers_db.headers_230522_db});'''
+        # )
+        # print('[INFO] Таблица reestr_230522_di создана')
+        #
+        # cursor.execute(
+        #     '''CREATE TABLE IF NOT EXISTS indexes_tab(
+        #     id serial PRIMARY KEY,
+        #     variables varchar(30) NOT NULL,
+        #     number_of_words int NOT NULL,
+        #     keyword varchar(20),
+        #     formulas text);'''
+        # )
+        # print('[INFO] Таблица indexes_tab создана')
+        #
+        # cursor.execute(
+        #     '''CREATE TABLE IF NOT EXISTS declension_tribun_tab(
+        #     id serial PRIMARY KEY,
+        #     number_word int NOT NULL,
+        #     ending_word varchar(20) NOT NULL,
+        #     condition varchar(20),
+        #     imenit varchar(10),
+        #     rodit varchar(10),
+        #     datel varchar(10),
+        #     vinit varchar(10),
+        #     tvorit varchar(10),
+        #     predl varchar(10));'''
+        # )
+        # print('[INFO] Таблица declensions_debt_tab создана')
 
         # x = 'number_ep'
         # y = 'debtor'
@@ -120,24 +108,59 @@ def create_tab():
 
 
 def insert_in_tab():
-    try:
-        # добавление строк
-        indexies_list = headers_db.indexes
-        for index in indexies_list:
-            # print(index)
-            cursor.execute(
-                f'''INSERT INTO indexes_tab (variables, number_of_words, keyword, formulas) VALUES {index};'''
-            )
-            # print('[INFO] Таблица reest_test2_di создана')
+    with open('data/fedresurs_bankrot_29-05-2022.csv', 'r') as file:
+        data = csv.reader(file, delimiter=",")
 
-    except Exception as _ex:
-        print('[INFO] Error while working with PostgreSQL', _ex)
+        try:
+            # добавление строк
+            count = 0
+            for row in data:
+                index = str(row)[1:-1]
+                if count > 0:
+                    cursor.execute(
+                        f'''INSERT INTO reestr_bankrot (dolzhnik, 
+                        fio_do_izmenenija, 
+                        data_rozhdenija, 
+                        mesto_rozhdenija,
+                        adres_registratsii,
+                        inn_dolzhnika,
+                        snils_dolzhnika,
+                        sudebnoe_proizvodstvo,
+                        №_dela_o_bankrotstvetext) VALUES ({index});'''
+                    )
+                count += 1
 
-    finally:
-        if connection:
-            cursor.close()
-            connection.close()
-            print('[INFO] PostgreSQL connection closed')
+
+        except Exception as _ex:
+            print('[INFO] Error while working with PostgreSQL', _ex)
+
+        finally:
+            if connection:
+                cursor.close()
+                connection.close()
+                print('[INFO] PostgreSQL connection closed')
+
+
+
+
+    # try:
+    #     # добавление строк
+    #     indexies_list = headers_db.indexes
+    #     for index in indexies_list:
+    #         # print(index)
+    #         cursor.execute(
+    #             f'''INSERT INTO indexes_tab (variables, number_of_words, keyword, formulas) VALUES {index};'''
+    #         )
+    #         # print('[INFO] Таблица reest_test2_di создана')
+    #
+    # except Exception as _ex:
+    #     print('[INFO] Error while working with PostgreSQL', _ex)
+    #
+    # finally:
+    #     if connection:
+    #         cursor.close()
+    #         connection.close()
+    #         print('[INFO] PostgreSQL connection closed')
 
 
 def select_from_tab():
@@ -190,6 +213,6 @@ def create_file():
 if __name__ == '__main__':
     # create_file()
     # heading_transliterate()
-    create_tab()
-    # insert_in_tab()
+    # create_tab()
+    insert_in_tab()
     # select_from_tab()

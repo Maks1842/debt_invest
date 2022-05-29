@@ -42,7 +42,7 @@ logging.basicConfig(filename=f'example_{today_log}.log', filemode='w', level=log
 
 def select_from_reestr_tab():
     try:
-        cursor.execute('''SELECT fio FROM reestr_230522_di;''')
+        cursor.execute('''SELECT fio FROM reestr_test_di;''')
         reestr_tab = cursor.fetchall()
 
         fedresurs_bankrot(reestr_tab)
@@ -76,7 +76,6 @@ def fedresurs_bankrot(list_name):
         time.sleep(2)
 
         # list_name = list_name[432:]        # Если необходимо возобновить с указанного места, COUNT также необходимо увеличить
-
 
 
         print(len(list_name))

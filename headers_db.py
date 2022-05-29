@@ -111,3 +111,15 @@ indexes = (("Должник", 3, '', "SELECT FIO, Rod FROM reestr_test_di WHERE 
            ("Суд", 0, 'суд', "SELECT Sud FROM reestr_test_di WHERE id =")
            )
 
+
+headers_bankrot = '''id serial PRIMARY KEY,
+                    Dolzhnik varchar(50),
+                    FIO_do_izmenenija varchar(50),
+                    Data_rozhdenija varchar(50),
+                    Mesto_rozhdenija text,
+                    Adres_registratsii text,
+                    INN_dolzhnika varchar(20),
+                    SNILS_dolzhnika varchar(20),
+                    Sudebnoe_proizvodstvo text,
+                    №_dela_o_bankrotstvetext varchar(30)'''
+
