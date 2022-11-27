@@ -1,6 +1,8 @@
 '''
-Это вспомогательный модуль.
-Импорт/Экспорт данных в СУБД Postgresql из excel/csv
+Это вспомогательные модули.
+- Извлечение заголовков столбцов, transliterat кирилицы в латиницу
+- Создание таблиц в БД Postgresql
+- Импорт/Экспорт данных в БД Postgresql из excel/csv
 
 !!! Для склонений, в формуле ОБЯЗАТЕЛЬНО должна быть ссылка на поле "РОД"!!!
 
@@ -25,12 +27,16 @@ connection = psycopg2.connect(
     password=password,
     database=db_name
 )
-connection.autocommit = True    # автоматически сохраняет изменения в БД. Чтобы после каждого запроса ни вставлять connection.commit()
+# автоматически сохраняет изменения в БД. Чтобы после каждого запроса ни вставлять connection.commit()
+connection.autocommit = True
 
 # создать объект cursor для работы с database
 cursor = connection.cursor()
 
 
+'''
+Извлечение заголовков столбцов, transliterat кирилицы в латиницу
+'''
 def heading_transliterate():
     wookbook = openpyxl.load_workbook('data/fedresurs_bankrot_28-05-2022.xlsx')
     worksheet = wookbook.active
@@ -42,6 +48,11 @@ def heading_transliterate():
 
             print(text_export)
 
+
+'''
+Создание таблицы в БД, с наименованием полей, в которой будут храниться данные для обработки (например реестр должников)
+!!!Таблица создается без данных.
+'''
 def create_tab():
     try:
         # создать таблицу
@@ -106,7 +117,9 @@ def create_tab():
             print('[INFO] PostgreSQL connection closed')
 
 
-
+'''
+Данные из excel (например из реестра должников) заливаются в таблицу БД, созданную в def create_tab().
+'''
 def insert_in_tab():
     with open('data/fedresurs_bankrot_29-05-2022.csv', 'r') as file:
         data = csv.reader(file, delimiter=",")
@@ -163,6 +176,10 @@ def insert_in_tab():
     #         print('[INFO] PostgreSQL connection closed')
 
 
+
+'''
+Извлечение данных из даблицы БД
+'''
 def select_from_tab():
     try:
         cursor.execute('''SELECT * FROM indexes_tab;''')
