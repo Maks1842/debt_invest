@@ -128,11 +128,11 @@ def select_from_indexes_tab(id_reestr, count):
 
 
 def doc_pattern(context_dict, count):
-    doc = DocxTemplate(f'data/30.11.2022/1 ПП окон ИП, есть ИЛ_ШАБЛОН.docx')
+    doc = DocxTemplate(f'data/30.11.2022/7 Справка об утере листа ЧС_Шаблон.docx')
     name = context_dict.get('Должник')
-    num = context_dict.get('номер_договора')
+    num = context_dict.get('номер_КД')
     doc.render(context_dict)
-    doc.save(f'result/ПП окон ИП, есть ИЛ/{name}_{num}.docx')
+    doc.save(f'result/7 Справка об утере листа ЧС/{name}_{num}.docx')
 
 
 
