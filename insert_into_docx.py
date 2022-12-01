@@ -5,6 +5,15 @@
 - столбцы - наименование полей из которых брать необходимую информацию, для добавления в .docx;
 - строки - должники, по которым формировать документы.
 
+Последовательность импортирования данных в БД, с помощью модуля sql_db.py
+1. heading_transliterate() - Извлечение заголовков столбцов, transliterat кирилицы в латиницу. Полученные данные
+скопировать и вставить в headers_db.py
+2. В модуле headers_db.py отформатировать названия столбцов, согласно требованиям, задать формат полей.
+Сразу подготовить поля для # Для функции insert_in_tab() insert_headers_01122022 =
+3. create_tab() - Создание таблицы в БД Postgresql, используя поля из headers_db.py
+4. insert_in_tab() - Импорт данных в БД Postgresql из .csv
+
+
 В моделе indexes_tab, хранятся индексы применяемые в шаблоне и sql-запросы из таблицы с должниками - declension_tribun,
 а также запросы к таблицам со склонениями - declension_debt.
 
@@ -46,7 +55,7 @@ cursor = connection.cursor()
 
 def select_from_reestr_tab():
     try:
-        cursor.execute('''SELECT id FROM reestr_230522_di;''')
+        cursor.execute('''SELECT id FROM reestr_01122022;''')
         reestr_tab = cursor.fetchall()
         count = 1455
         for data in reestr_tab:
@@ -64,20 +73,24 @@ def select_from_reestr_tab():
 
 
 def select_from_indexes_tab(id_reestr, count):
+    context_dict = {}
     context = {}
     result_decl = ''
-    try:
-        cursor.execute('''SELECT * FROM indexes_tab;''')
-        indexes_tab = cursor.fetchall()
-        # print(f'{index_tab = }')
-        for index in indexes_tab:
-            if index[3] != None:
-                try:
-                    cursor.execute(f'''{index[3]}''')
-                    index_tab = cursor.fetchall()
-                except Exception as _ex:
-                    print('[INFO] Error while working with PostgreSQL', _ex)
+    count_debt = 0
 
+    cursor.execute('''SELECT * FROM indexes_tab;''')
+    indexes_tab = cursor.fetchall()
+    # print(f'{index_tab = }')
+    for index in indexes_tab:
+        count_debt += 1
+        if index[3] != None:
+            try:
+                cursor.execute(f'''{index[3]}''')
+                index_tab = cursor.fetchall()
+            except Exception as _ex:
+                print('[INFO] Error while working with PostgreSQL (index[3])', _ex)
+
+            try:
                 cursor.execute(f'''{index[2]}{id_reestr}''')
                 text = cursor.fetchone()
                 # print(f'{text = }')
@@ -91,27 +104,35 @@ def select_from_indexes_tab(id_reestr, count):
                             f'{index[1]}_пред': f'{result_decl[5]}',
                             f'Порядковый': f'{count}'
                             }
-                # print(f'{context = }')
+            except Exception as _ex:
+                print('[INFO] Error while working with PostgreSQL (declensions)', _ex)
 
-            elif index[3] == None:
+            context_dict.update(context)
+
+        elif index[3] == None:
+            try:
                 cursor.execute(f'''{index[2]}{id_reestr}''')
                 text2 = cursor.fetchone()
-                # print(f'{x = }')
-                if f'{text2[0]}' != 'None':
+                # print(f'{text2[0] = }')
+                if f'{text2[0]}' != '':
                     context[f'{index[1]}'] = f'{text2[0]}'
                     # print(f'{context = }')
                 else:
                     context[f'{index[1]}'] = ''
-            doc_pattern(context, result_decl, count)
+            except Exception as _ex:
+                print('[INFO] Error while working with PostgreSQL (text2)', _ex)
 
-    except Exception as _ex:
-        print('[INFO] Error while working with PostgreSQL 2', _ex)
+            context_dict.update(context)
+
+    doc_pattern(context_dict, count)
 
 
-def doc_pattern(context, word, count):
-    doc = DocxTemplate(f'data/УВЕД-ТРЕБ  ЧС_ШАБЛОН.docx')
-    doc.render(context)
-    doc.save(f'data/Без печати_240522/УВЕД-ТРЕБ {word[0]}_{count}.docx')
+def doc_pattern(context_dict, count):
+    doc = DocxTemplate(f'data/30.11.2022/1 ПП окон ИП, есть ИЛ_ШАБЛОН.docx')
+    name = context_dict.get('Должник')
+    num = context_dict.get('номер_договора')
+    doc.render(context_dict)
+    doc.save(f'result/ПП окон ИП, есть ИЛ/{name}_{num}.docx')
 
 
 

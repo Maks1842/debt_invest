@@ -1,8 +1,12 @@
 '''
 Это вспомогательные модули.
-- Извлечение заголовков столбцов, transliterat кирилицы в латиницу
-- Создание таблиц в БД Postgresql
-- Импорт/Экспорт данных в БД Postgresql из excel/csv
+Последовательность использования
+1. heading_transliterate() - Извлечение заголовков столбцов, transliterat кирилицы в латиницу. Полученные данные
+скопировать и вставить в headers_db.py
+2. В модуле headers_db.py отформатировать названия столбцов, согласно требованиям, задать формат полей.
+Сразу подготовить поля для # Для функции insert_in_tab() insert_headers_01122022 =
+3. create_tab() - Создание таблицы в БД Postgresql, используя поля из headers_db.py
+4. insert_in_tab() - Импорт данных в БД Postgresql из .csv
 
 !!! Для склонений, в формуле ОБЯЗАТЕЛЬНО должна быть ссылка на поле "РОД"!!!
 
@@ -36,12 +40,22 @@ cursor = connection.cursor()
 
 '''
 Извлечение заголовков столбцов, transliterat кирилицы в латиницу
+
+Полученные заголовки необходимо отформатировать:
+- запрещены символы ()/'%
+- заменить: / на _
+- заменить: % на percent
+
+Формат столбцов:
+- текст до 100 символов (в т.ч. даты, ссылки и пр.) --> varchar(100);
+- текст более 100 символов --> text;
+- суммы --> float. Если данные в float не грузятся, то сначало сделать формат numeric, а затем float;
 '''
 def heading_transliterate():
-    wookbook = openpyxl.load_workbook('data/fedresurs_bankrot_28-05-2022.xlsx')
+    wookbook = openpyxl.load_workbook('data/30.11.2022/реестр для пп_ОСН.xlsx')
     worksheet = wookbook.active
     for i in range(1):
-        for col in worksheet.iter_cols(1, 9):
+        for col in worksheet.iter_cols(1, 47):
             ru_text = col[i].value
             text = translit(ru_text, language_code='ru', reversed=True)
             text_export = re.sub(' ', '_', text)
@@ -57,25 +71,10 @@ def create_tab():
     try:
         # создать таблицу
         cursor.execute(
-            f'''CREATE TABLE IF NOT EXISTS reestr_bankrot({headers_db.headers_bankrot});'''
+            f'''CREATE TABLE IF NOT EXISTS reestr_01122022({headers_db.headers_01122022});'''
         )
         print('[INFO] Таблица reestr_bankrot создана')
 
-        # cursor.execute(
-        #     f'''CREATE TABLE IF NOT EXISTS reestr_230522_di({headers_db.headers_230522_db});'''
-        # )
-        # print('[INFO] Таблица reestr_230522_di создана')
-        #
-        # cursor.execute(
-        #     '''CREATE TABLE IF NOT EXISTS indexes_tab(
-        #     id serial PRIMARY KEY,
-        #     variables varchar(30) NOT NULL,
-        #     number_of_words int NOT NULL,
-        #     keyword varchar(20),
-        #     formulas text);'''
-        # )
-        # print('[INFO] Таблица indexes_tab создана')
-        #
         # cursor.execute(
         #     '''CREATE TABLE IF NOT EXISTS declension_tribun_tab(
         #     id serial PRIMARY KEY,
@@ -121,7 +120,7 @@ def create_tab():
 Данные из excel (например из реестра должников) заливаются в таблицу БД, созданную в def create_tab().
 '''
 def insert_in_tab():
-    with open('data/fedresurs_bankrot_29-05-2022.csv', 'r') as file:
+    with open('data/30.11.2022/реестр для пп_ОСН.csv', 'r') as file:
         data = csv.reader(file, delimiter=",")
 
         try:
@@ -131,15 +130,7 @@ def insert_in_tab():
                 index = str(row)[1:-1]
                 if count > 0:
                     cursor.execute(
-                        f'''INSERT INTO reestr_bankrot (dolzhnik, 
-                        fio_do_izmenenija, 
-                        data_rozhdenija, 
-                        mesto_rozhdenija,
-                        adres_registratsii,
-                        inn_dolzhnika,
-                        snils_dolzhnika,
-                        sudebnoe_proizvodstvo,
-                        №_dela_o_bankrotstvetext) VALUES ({index});'''
+                        f'''INSERT INTO reestr_01122022 ({headers_db.insert_headers_01122022}) VALUES ({index});'''
                     )
                 count += 1
 
@@ -228,8 +219,9 @@ def create_file():
 
 
 if __name__ == '__main__':
-    # create_file()
+
     # heading_transliterate()
+    # create_file()
     # create_tab()
     insert_in_tab()
     # select_from_tab()
