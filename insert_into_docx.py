@@ -55,7 +55,11 @@ cursor = connection.cursor()
 
 def select_from_reestr_tab():
     try:
-        cursor.execute('''SELECT id FROM reestr_01122022;''')
+        # Если надо выбрать весь database
+        # cursor.execute('''SELECT id FROM reestr_01122022;''')
+
+        # Если надо выбрать отфильтрованный database по критерию
+        cursor.execute('''SELECT id FROM reestr_01122022 where zajavlenie = ('заявление 7');''')
         reestr_tab = cursor.fetchall()
         count = 1455
         for data in reestr_tab:
@@ -128,11 +132,11 @@ def select_from_indexes_tab(id_reestr, count):
 
 
 def doc_pattern(context_dict, count):
-    doc = DocxTemplate(f'data/30.11.2022/Справка об утере листа ЧС_Шаблон.docx')
+    doc = DocxTemplate(f'data/30.11.2022/7 Справка об утере листа ЧС_Шаблон.docx')
     name = context_dict.get('Должник')
     num = context_dict.get('номер_КД')
     doc.render(context_dict)
-    doc.save(f'result/7 Справка об утере листа ЧС/{name}_{num}.docx')
+    doc.save(f'result/Справка ЧС 7/{name}_{num}.docx')
 
 
 
